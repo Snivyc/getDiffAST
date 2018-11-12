@@ -131,6 +131,7 @@ class ASTDiff(object):
         print("修改的语句块：")
         for t in self.findUpdateBlockNode():
             typeLabel = self.astBefore.getNodeByID(t[0]).typeLabel
+            print(t)
             if (typeLabel, t[1]) in self.defectClassDict:
                 print(self.defectClassDict[(typeLabel, t[1])])
             else:
