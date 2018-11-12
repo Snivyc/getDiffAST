@@ -20,7 +20,8 @@ class ASTDiff(object):
                                 "ExpressionStatement":"表达式语句",
                                 "WhileStatement":"while语句",
                                 }
-        self.defectClassDict = {("IfStatement",0):"if条件",
+        self.defectClassDict = {
+                                ("IfStatement",0):"if条件",
                                 ("IfStatement",1):"if主体",
                                 ("IfStatement",2):"ifelse体",
                                 ("ExpressionStatement",0):"表达式语句",
