@@ -19,21 +19,45 @@ class ASTDiff(object):
                                 "ImportDeclaration":"import包",
                                 "ExpressionStatement":"表达式语句",
                                 "WhileStatement":"while语句",
+                                "MethodInvocation":"函数调用",
                                 }
         self.defectClassDict = {
-                                ("IfStatement",0):"if条件",
-                                ("IfStatement",1):"if主体",
-                                ("IfStatement",2):"ifelse体",
-                                ("ExpressionStatement",0):"表达式语句",
-                                ("WhileStatement",0):"while条件",
-                                ("WhileStatement",1):"while主体",
-                                ("ReturnStatement",0):"return语句",
-                                ("ImportDeclaration",0):"import语句",
-                                ("ForStatement", 0): "for初始条件",
-                                ("ForStatement", 1): "for循环条件",
-                                ("ForStatement", 2): "for结束执行的语句",
-                                ("ForStatement", 3): "for主体",
-                                }
+            ("IfStatement",0):"if条件",
+            ("IfStatement",1):"if主体",
+            ("IfStatement",2):"ifelse体",
+            ("ExpressionStatement",0):"表达式语句",
+            ("WhileStatement",0):"while条件",
+            ("WhileStatement",1):"while主体",
+            ("ReturnStatement",0):"return语句",
+            ("ImportDeclaration",0):"import语句",
+            ("ForStatement", 0): "for初始条件",
+            ("ForStatement", 1): "for循环条件",
+            ("ForStatement", 2): "for结束执行的语句",
+            ("ForStatement", 3): "for主体",
+            ("SingleVariableDeclaration", 0): "形参类型",
+            ("SingleVariableDeclaration", 1): "形参名称",
+        }
+
+    def getBlockName(self, changedType, index, nodeID):
+        '''
+        输入语句块，和修改的子节点的下标，返回修改的类型
+        '''
+        if (changedType, index) in self.defectClassDict:
+            return self.defectClassDict[(changedType, index)]
+        if changedType == "MethodInvocation":
+            return "函数调用语句"
+        if changedType == "MethodDeclaration":
+            typeLabel = self.astBefore.getNodeByID(nodeID).children[index].typeLabel
+            if typeLabel == "SimpleName":
+                return "函数定义.函数名称"
+            elif typeLabel == "PrimitiveType":
+                return "函数定义.返回值类型"
+            elif typeLabel == "Modifier":
+                return "修饰词节点"
+            else:
+                return "路过..."
+        return "（未定义）"
+
 
     def getDiffTreeNode(self):
         '''
