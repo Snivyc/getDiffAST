@@ -157,10 +157,10 @@ class ASTDiff(object):
         for t in self.findUpdateBlockNode():
             typeLabel = self.astBefore.getNodeByID(t[0]).typeLabel
             print(t)
-            if (typeLabel, t[1]) in self.defectClassDict:
-                print(self.getBlockName(typeLabel, t[1], t[0]))
-            else:
-                print(typeLabel, "（未定义）")
+            # if (typeLabel, t[1]) in self.defectClassDict:
+            print(self.getBlockName(typeLabel, t[1], t[0]))
+            # else:
+            #     print(typeLabel, "（未定义）")
             # print(self.astBefore.getNodeByID(ID).typeLabel, self.structureHandle[self.astBefore.getNodeByID(ID).typeLabel])
         print('-------------------------------------------------------------------------------------------------------')
 
