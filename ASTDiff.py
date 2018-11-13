@@ -8,34 +8,35 @@ class ASTDiff(object):
         self.astBefore = AST("ASTbefore.json")
         self.astAfter = AST("ASTafter.json")
         self.diff = DiffOperate("diffscript.txt")
-        self.structureHandle = {"IfStatement":"if语句",
-                                "ForStatement":"for循环",
-                                "DoStatement":"do-while循环语句",
-                                "ReturnStatement":"return语句",
-                                "TryStatement":"try语句",
-                                "ThrowStatement":"抛出异常语句",
-                                "SwitchStatement":"Switch语句",
-                                "SingleVariableDeclaration":"方法的参数列表，单形参的变量声明???（没懂）",
-                                "ImportDeclaration":"import包",
-                                "ExpressionStatement":"表达式语句",
-                                "WhileStatement":"while语句",
-                                "MethodInvocation":"函数调用",
-                                }
+        self.structureHandle = {
+            "IfStatement": "if语句",
+            "ForStatement": "for循环",
+            "DoStatement": "do-while循环语句",
+            "ReturnStatement": "return语句",
+            "TryStatement": "try语句",
+            "ThrowStatement": "抛出异常语句",
+            "SwitchStatement": "Switch语句",
+            "SingleVariableDeclaration": "方法的参数列表，单形参的变量声明???（没懂）",
+            "ImportDeclaration": "import包",
+            "ExpressionStatement": "表达式语句",
+            "WhileStatement": "while语句",
+            "MethodInvocation": "函数调用",
+        }
         self.defectClassDict = {
-            ("IfStatement",0):"if条件",
-            ("IfStatement",1):"if主体",
-            ("IfStatement",2):"ifelse体",
-            ("ExpressionStatement",0):"表达式语句",
-            ("WhileStatement",0):"while条件",
-            ("WhileStatement",1):"while主体",
-            ("ReturnStatement",0):"return语句",
-            ("ImportDeclaration",0):"import语句",
-            ("ForStatement", 0): "for初始条件",
-            ("ForStatement", 1): "for循环条件",
-            ("ForStatement", 2): "for结束执行的语句",
-            ("ForStatement", 3): "for主体",
-            ("SingleVariableDeclaration", 0): "形参类型",
-            ("SingleVariableDeclaration", 1): "形参名称",
+            ("IfStatement", 0): "if.条件",
+            ("IfStatement", 1): "if.主体",
+            ("IfStatement", 2): "if.else体",
+            ("ExpressionStatement", 0): "表达式语句",
+            ("WhileStatement", 0): "while.条件",
+            ("WhileStatement", 1): "while.主体",
+            ("ReturnStatement", 0): "return语句",
+            ("ImportDeclaration", 0): "import语句",
+            ("ForStatement", 0): "for.初始条件",
+            ("ForStatement", 1): "for.循环条件",
+            ("ForStatement", 2): "for.结束执行的语句",
+            ("ForStatement", 3): "for.主体",
+            ("SingleVariableDeclaration", 0): "形参.类型",
+            ("SingleVariableDeclaration", 1): "形参.名称",
         }
 
     def getBlockName(self, changedType, index, nodeID):
@@ -46,6 +47,8 @@ class ASTDiff(object):
             return self.defectClassDict[(changedType, index)]
         if changedType == "MethodInvocation":
             return "函数调用语句"
+        if changedType == "SuperMethodInvocation":
+            return "调用父类方法"
         if changedType == "MethodDeclaration":
             typeLabel = self.astBefore.getNodeByID(nodeID).children[index].typeLabel
             if typeLabel == "SimpleName":
@@ -141,6 +144,7 @@ class ASTDiff(object):
         return returnList
 
     def outputPrueInsertNode(self):
+
         print("新加入的节点:")
         IDsList = self.getPrueInsertNode()
         for ID in IDsList:
@@ -156,7 +160,7 @@ class ASTDiff(object):
         print("修改的语句块：")
         for t in self.findUpdateBlockNode():
             typeLabel = self.astBefore.getNodeByID(t[0]).typeLabel
-            print(t)
+            # print(t)
             # if (typeLabel, t[1]) in self.defectClassDict:
             print(self.getBlockName(typeLabel, t[1], t[0]))
             # else:
@@ -182,20 +186,25 @@ class ASTDiff(object):
 
                     structureNode.add((tempNode.id, index))
                     # print(tempNode.typeLabel, '123123123123123')
+                # print(index)
                 index = self.getIndexInParent(tempNode.id, self.astBefore)
                 tempNode = tempNode.parent
-                if tempNode.typeLabel == "MethodDeclaration" or None:
+                if  tempNode == None:
                     break
         return structureNode
+
 
     def getIndexInParent(self, ID, ast):
         '''
         获取改节点在父节点中的下标，！！！！！！！需移动到AST类中！！！！！！！！！
         '''
         parent = ast.getNodeByID(ID).parent
-        for i in range(len(parent.children)):
-            if parent.children[i].id == ID:
-                return i
+        if parent != None:
+            for i in range(len(parent.children)):
+                if parent.children[i].id == ID:
+                    return i
+        else:
+            return 0
 
 
 
