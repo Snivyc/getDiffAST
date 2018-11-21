@@ -86,7 +86,7 @@ if __name__ == "__main__":
     changedNodeID = changedNodeID | tempSet
     changedNodeID = list(changedNodeID)
     def getCommonParent(changedNodeID):
-        while (len(changedNodeID) > 1):
+        while (len(changedNodeID) > 0):
             a = astBefore.ASTNodeList[changedNodeID.pop()]
             b = astBefore.ASTNodeList[changedNodeID.pop()]
             c = a
@@ -103,5 +103,6 @@ if __name__ == "__main__":
                 print(a)
         else:
             return changedNodeID
-    commonParentID = getCommonParent(changedNodeID)[0]
+    commonParentID = getCommonParent(changedNodeID)
+    print(commonParentID)
     print(astBefore.astToJson(commonParentID))

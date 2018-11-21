@@ -21,6 +21,7 @@ class ASTDiff(object):
             "ExpressionStatement": "表达式语句",
             "WhileStatement": "while语句",
             "MethodInvocation": "函数调用",
+            "MethodDeclaration": "函数定义"
         }
         self.defectClassDict = {
             ("IfStatement", 0): "if.条件",
@@ -58,7 +59,7 @@ class ASTDiff(object):
             elif typeLabel == "Modifier":
                 return "修饰词节点"
             else:
-                return "路过..."
+                return "路过..打扰了.."
         return "（未定义）"
 
 
@@ -106,7 +107,7 @@ class ASTDiff(object):
         '''
         如果一个节点，其自身及所有的孩子都是新增的（被插入，移动），其父节点不是新增的，则返回
         '''
-        joinedNodeIDs = self.diff.getJoinedIDs()
+        joinedNodeIDs = self.diff.getJoinedIDs() + self.diff.getMovedAfterIDs()
 
         # def isPrue(i):
         #     if self.diff.getMatchedBeforeID(i) == -1:
@@ -121,40 +122,42 @@ class ASTDiff(object):
         #         else:
         #             return 1
         #
-        returnList = []
+        mergeList = []
 
         for i in joinedNodeIDs:
             if self.diff.isJoinNode(self.astAfter.getNodeByID(i).parent.id):
                 continue
-            returnList.append(i)
+            mergeList.append(i)
             # if self.astAfter.getNodeByID(i).children == []:
             #     continue
             # if isPrue(i):
             #     returnList.append(i)
-        return returnList
+        return self.searchUpHandleNode(mergeList,self.astAfter)
 
     def getPrueDeleteNode(self):
-        deletedNodeIDs = self.diff.getDeleteBeforeIDs()
-        returnList = []
+        deletedNodeIDs = self.diff.getDeleteBeforeIDs() + self.diff.getMovedBeforeIDs()
+        mergeList = []
 
         for i in deletedNodeIDs:
             if self.astBefore.getNodeByID(i).parent.id in deletedNodeIDs:
                 continue
-            returnList.append(i)
-        return returnList
+            mergeList.append(i)
+        return self.searchUpHandleNode(mergeList,self.astBefore)
 
-    def outputPrueInsertNode(self):
+    def outputChangedNode(self):
 
         print("新加入的节点:")
         IDsList = self.getPrueInsertNode()
-        for ID in IDsList:
-            print(self.astAfter.getNodeByID(ID).typeLabel)
+        for t in IDsList:
+            typeLabel = self.astBefore.getNodeByID(t[0]).typeLabel
+            print(self.getBlockName(typeLabel, t[1], t[0]))
         print('-------------------------------------------------------------------------------------------------------')
 
         print("删除的节点:")
         IDsList = self.getPrueDeleteNode()
-        for ID in IDsList:
-            print(self.astBefore.getNodeByID(ID).typeLabel)
+        for t in IDsList:
+            typeLabel = self.astBefore.getNodeByID(t[0]).typeLabel
+            print(self.getBlockName(typeLabel, t[1], t[0]))
         print('-------------------------------------------------------------------------------------------------------')
 
         print("修改的语句块：")
@@ -170,27 +173,43 @@ class ASTDiff(object):
 
 
     def findUpdateBlockNode(self):
+        '''
+        寻找所有changed所在的节点更新的语句块
+        '''
         updateList = self.diff.getUpdateBeforeIDs()
         mergeList = []
         for i in updateList:
             if self.astBefore.getNodeByID(i).parent.id in updateList:
                 continue
             mergeList.append(i)
+
+        return self.searchUpHandleNode(mergeList, self.astBefore)
+
+
+    def searchUpHandleNode(self, mergeList, AST):
+        '''
+        在ASTBeftore中向上搜索
+        '''
         structureNode = set()
         for i in mergeList:
-            tempNode = self.astBefore.getNodeByID(i)
+            tempNode = AST.getNodeByID(i)
             index = None
             while True:
+                if tempNode == None:
+                    break
+                elif tempNode.typeLabel == "MethodDeclaration":
+                    structureNode.add((tempNode.id, index))
+                    break
                 # print(tempNode.typeLabel,"----------")
-                if tempNode.typeLabel in self.structureHandle:
+                elif tempNode.typeLabel in self.structureHandle:
 
                     structureNode.add((tempNode.id, index))
                     # print(tempNode.typeLabel, '123123123123123')
                 # print(index)
-                index = self.getIndexInParent(tempNode.id, self.astBefore)
+                index = self.getIndexInParent(tempNode.id, AST)
                 tempNode = tempNode.parent
-                if  tempNode == None:
-                    break
+
+        print(structureNode)
         return structureNode
 
 
@@ -208,13 +227,8 @@ class ASTDiff(object):
 
 
 
-
-
-
-
-
 if __name__ == "__main__":
     astDiff = ASTDiff()
     # print(astDiff.getDiffTreeNode())
-    astDiff.outputPrueInsertNode()
+    astDiff.outputChangedNode()
     # print(astDiff.findUpdateBlockNode())

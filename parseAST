@@ -10,4 +10,4 @@ os.system("gumtree diff " + oldFileName + " " + newFileName + " > diffscript.txt
 
 astDiff = ASTDiff()
 # print(astDiff.getDiffTreeNode())
-astDiff.outputPrueInsertNode()
+astDiff.outputChangedNode()
