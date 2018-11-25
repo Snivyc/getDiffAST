@@ -8,6 +8,6 @@ os.system("gumtree parse " + oldFileName + " > ASTbefore.json")
 os.system("gumtree parse " + newFileName + " > ASTafter.json")
 os.system("gumtree diff " + oldFileName + " " + newFileName + " > diffscript.txt")
 
-astDiff = ASTDiff()
+astDiff = ASTDiff(oldFileName, newFileName)
 # print(astDiff.getDiffTreeNode())
 astDiff.outputChangedNode()

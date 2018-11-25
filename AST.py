@@ -28,7 +28,9 @@ class AST(object):
             self.addNodeParent(i, subTree)
 
 
-    def __init__(self,file):
+    def __init__(self,file, code):
+        with open(code, 'r') as f:
+            self.CODE = f.read()
         self.ASTNodeList = []
         with open(file, 'r') as f:
             ASTJSON = f.read()
