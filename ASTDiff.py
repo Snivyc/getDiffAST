@@ -4,9 +4,9 @@ import copy
 
 class ASTDiff(object):
 
-    def __init__(self):
-        self.astBefore = AST("ASTbefore.json")
-        self.astAfter = AST("ASTafter.json")
+    def __init__(self, oldfile, newfile):
+        self.astBefore = AST("ASTbefore.json", oldfile)
+        self.astAfter = AST("ASTafter.json", newfile)
         self.diff = DiffOperate("diffscript.txt")
         self.structureHandle = {
             "IfStatement": "if语句",
