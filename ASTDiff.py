@@ -40,7 +40,7 @@ class ASTDiff(object):
             ("SingleVariableDeclaration", 1): "形参.名称",
         }
 
-    def getBlockName(self, changedType, index, nodeID):
+    def getBlockName(self, changedType, index, nodeID, ast):
         '''
         输入语句块，和修改的子节点的下标，返回修改的类型
         '''
@@ -51,7 +51,7 @@ class ASTDiff(object):
         if changedType == "SuperMethodInvocation":
             return "调用父类方法"
         if changedType == "MethodDeclaration":
-            typeLabel = self.astBefore.getNodeByID(nodeID).children[index].typeLabel
+            typeLabel = ast.getNodeByID(nodeID).children[index].typeLabel
             if typeLabel == "SimpleName":
                 return "函数定义.函数名称"
             elif typeLabel == "PrimitiveType":
@@ -60,6 +60,22 @@ class ASTDiff(object):
                 return "修饰词节点"
             else:
                 return "路过..打扰了.."
+        if changedType == "MethodInvocation":
+            node = self.astBefore.getNodeByID(nodeID)
+            block = None
+            for i in range(len(node)-1):
+                star = node.children[i].pos + node.children[i].length
+                end = node.children[i + 1].pos
+                if "(" in ast.CODE[star : end]:
+                    block = i
+                    break
+            else:
+                raise RuntimeError("No Block")
+            if index <= block:
+                return "函数调用.方法"
+            else:
+                return "函数调用.参数"
+
         return "（未定义）"
 
 
@@ -149,15 +165,15 @@ class ASTDiff(object):
         print("新加入的节点:")
         IDsList = self.getPrueInsertNode()
         for t in IDsList:
-            typeLabel = self.astBefore.getNodeByID(t[0]).typeLabel
-            print(self.getBlockName(typeLabel, t[1], t[0]))
+            typeLabel = self.astAfter.getNodeByID(t[0]).typeLabel
+            print(self.getBlockName(typeLabel, t[1], t[0], self.astAfter))
         print('-------------------------------------------------------------------------------------------------------')
 
         print("删除的节点:")
         IDsList = self.getPrueDeleteNode()
         for t in IDsList:
             typeLabel = self.astBefore.getNodeByID(t[0]).typeLabel
-            print(self.getBlockName(typeLabel, t[1], t[0]))
+            print(self.getBlockName(typeLabel, t[1], t[0], self.astBefore))
         print('-------------------------------------------------------------------------------------------------------')
 
         print("修改的语句块：")
@@ -165,7 +181,7 @@ class ASTDiff(object):
             typeLabel = self.astBefore.getNodeByID(t[0]).typeLabel
             # print(t)
             # if (typeLabel, t[1]) in self.defectClassDict:
-            print(self.getBlockName(typeLabel, t[1], t[0]))
+            print(self.getBlockName(typeLabel, t[1], t[0], self.astBefore))
             # else:
             #     print(typeLabel, "（未定义）")
             # print(self.astBefore.getNodeByID(ID).typeLabel, self.structureHandle[self.astBefore.getNodeByID(ID).typeLabel])
