@@ -24,18 +24,18 @@ class ASTDiff(object):
             "MethodDeclaration": "函数定义"
         }
         self.defectClassDict = {
-            ("IfStatement", 0): "if.条件",
-            ("IfStatement", 1): "if.主体",
-            ("IfStatement", 2): "if.else体",
-            ("ExpressionStatement", 0): "表达式语句",
-            ("WhileStatement", 0): "while.条件",
-            ("WhileStatement", 1): "while.主体",
-            ("ReturnStatement", 0): "return语句",
-            ("ImportDeclaration", 0): "import语句",
-            ("ForStatement", 0): "for.初始条件",
-            ("ForStatement", 1): "for.循环条件",
-            ("ForStatement", 2): "for.结束执行的语句",
-            ("ForStatement", 3): "for.主体",
+            ("IfStatement", 0): "1.1 if.条件",
+            ("IfStatement", 1): "1.2 if.主体",
+            ("IfStatement", 2): "1.3 if.else体",
+            ("ExpressionStatement", 0): "4 表达式语句",
+            ("WhileStatement", 0): "2.1 while.条件",
+            ("WhileStatement", 1): "2.2 while.主体",
+            ("ReturnStatement", 0): "3 return语句",
+            ("ImportDeclaration", 0): "7 import语句",
+            ("ForStatement", 0): "8.1 for.初始条件",
+            ("ForStatement", 1): "8.2 for.循环条件",
+            ("ForStatement", 2): "8.3 for.结束执行的语句",
+            ("ForStatement", 3): "8.4 for.主体",
             ("SingleVariableDeclaration", 0): "形参.类型",
             ("SingleVariableDeclaration", 1): "形参.名称",
         }
@@ -46,8 +46,8 @@ class ASTDiff(object):
         '''
         if (changedType, index) in self.defectClassDict:
             return self.defectClassDict[(changedType, index)]
-        if changedType == "MethodInvocation":
-            return "函数调用语句"
+        # if changedType == "MethodInvocation":
+        #     return "函数调用语句"
         if changedType == "SuperMethodInvocation":
             return "调用父类方法"
         if changedType == "MethodDeclaration":
@@ -57,9 +57,10 @@ class ASTDiff(object):
             elif typeLabel == "PrimitiveType":
                 return "函数定义.返回值类型"
             elif typeLabel == "Modifier":
-                return "修饰词节点"
+                return "函数定义.修饰词节点"
             else:
-                return "路过..打扰了.."
+                # return "路过..打扰了.."
+                return
         if changedType == "MethodInvocation":
             node = self.astBefore.getNodeByID(nodeID)
             block = None
@@ -72,9 +73,9 @@ class ASTDiff(object):
             else:
                 raise RuntimeError("No Block")
             if index <= block:
-                return "函数调用.方法"
+                return "5.1 函数调用.方法名"
             else:
-                return "函数调用.参数"
+                return "5.2 函数调用.参数"
 
         return "（未定义）"
 
