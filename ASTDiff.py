@@ -62,6 +62,7 @@ class ASTDiff(object):
                 # return "路过..打扰了.."
                 return
         if changedType == "MethodInvocation":
+            print(nodeID)
             node = ast.getNodeByID(nodeID)
             block = None
             print(node.label)
