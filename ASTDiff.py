@@ -212,6 +212,7 @@ class ASTDiff(object):
             index = self.getIndexInParent(tempNode.id, AST)
             tempNodeO = tempNode
             tempNode = tempNode.parent
+            print("parent",tempNode.id)
             while True:
                 if tempNode == None:
                     break
