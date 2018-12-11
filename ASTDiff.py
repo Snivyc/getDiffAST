@@ -81,7 +81,7 @@ class ASTDiff(object):
                         block = i
                         break
                 else:
-                    raise RuntimeError("No Block")
+                    return "5.* 函数调用.未知"
                 if index <= block:
                     return "5.1 函数调用.方法名"
                 else:
