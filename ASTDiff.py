@@ -64,6 +64,7 @@ class ASTDiff(object):
         if changedType == "MethodInvocation":
             node = self.astBefore.getNodeByID(nodeID)
             block = None
+            print(ast.CODE[node.pos: node.pos+node.length])
             for i in range(len(node.children)-1):
                 star = node.children[i].pos + node.children[i].length
                 end = node.children[i + 1].pos
