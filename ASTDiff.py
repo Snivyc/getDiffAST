@@ -216,12 +216,12 @@ class ASTDiff(object):
                 if tempNode == None:
                     break
                 elif tempNode.typeLabel == "MethodDeclaration":
-                    print(tempNodeO)
+                    print(tempNodeO.id)
                     structureNode.add((tempNode.id, index))
                     break
                 # print(tempNode.typeLabel,"----------")
                 elif tempNode.typeLabel in self.structureHandle:
-                    print(tempNodeO)
+                    print(tempNodeO.id)
                     structureNode.add((tempNode.id, index))
                     # print(tempNode.typeLabel, '123123123123123')
                 # print(index)
