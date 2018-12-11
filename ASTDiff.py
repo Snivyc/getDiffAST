@@ -69,23 +69,20 @@ class ASTDiff(object):
             print("***************************************")
             print(node.pos, node.pos+node.length)
             print(ast.CODE[node.pos: node.pos+node.length])
-            if len(node.children) == 1:
+            for i in range(len(node.children)-1):
+                start = node.children[i].pos + node.children[i].length
+                end = node.children[i + 1].pos
+                print(start, end)
+                print(ast.CODE[start : end])
+                if "(" in ast.CODE[start:end]:
+                    block = i
+                    break
+            else:
+                return "5.1 函数调用.方法名"
+            if index <= block:
                 return "5.1 函数调用.方法名"
             else:
-                for i in range(len(node.children)-1):
-                    start = node.children[i].pos + node.children[i].length
-                    end = node.children[i + 1].pos
-                    print(start, end)
-                    print(ast.CODE[start : end])
-                    if "(" in ast.CODE[start : end]:
-                        block = i
-                        break
-                else:
-                    return "5.* 函数调用.未知"
-                if index <= block:
-                    return "5.1 函数调用.方法名"
-                else:
-                    return "5.2 函数调用.参数"
+                return "5.2 函数调用.参数"
 
         return "（未定义）"
 
