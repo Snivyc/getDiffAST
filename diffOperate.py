@@ -33,7 +33,7 @@ class DiffOperate():
                 elif line.startswith("Update"):
                     matchObj = re.findall(r'(?<=\()\d+(?=\))', line)
                     self.updateList.append(int(matchObj[0]))
-                    print("update", matchObj[0])
+                    # print("update", matchObj[0])
 
         # print(self.matchList)
         # print(self.insertList)

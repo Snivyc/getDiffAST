@@ -229,7 +229,7 @@ class ASTDiff(object):
                     break
                 # print(tempNode.typeLabel,"----------")
                 elif tempNode.typeLabel in self.structureHandle:
-                    print(tempNodeO.id)
+                    # print(tempNodeO.id)
                     structureNode.add((tempNode.id, index))
                     # print(tempNode.typeLabel, '123123123123123')
                 # print(index)
