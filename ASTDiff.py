@@ -67,12 +67,14 @@ class ASTDiff(object):
             block = None
             print(node.typeLabel)
             print("***************************************")
+            print(node.pos, node.pos+node.length)
             print(ast.CODE[node.pos: node.pos+node.length])
             for i in range(len(node.children)-1):
-                star = node.children[i].pos + node.children[i].length
+                start = node.children[i].pos + node.children[i].length
                 end = node.children[i + 1].pos
-                print(ast.CODE[star : end])
-                if "(" in ast.CODE[star : end]:
+                print(start, end)
+                print(ast.CODE[start : end])
+                if "(" in ast.CODE[start : end]:
                     block = i
                     break
             else:
