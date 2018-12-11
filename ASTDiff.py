@@ -198,7 +198,7 @@ class ASTDiff(object):
             if self.astBefore.getNodeByID(i).parent.id in updateList:
                 continue
             mergeList.append(i)
-
+        print(mergeList)
         return self.searchUpHandleNode(mergeList, self.astBefore)
 
 
@@ -210,16 +210,18 @@ class ASTDiff(object):
         for i in mergeList:
             tempNode = AST.getNodeByID(i)
             index = self.getIndexInParent(tempNode.id, AST)
+            tempNodeO = tempNode
             tempNode = tempNode.parent
             while True:
                 if tempNode == None:
                     break
                 elif tempNode.typeLabel == "MethodDeclaration":
+                    print(tempNodeO)
                     structureNode.add((tempNode.id, index))
                     break
                 # print(tempNode.typeLabel,"----------")
                 elif tempNode.typeLabel in self.structureHandle:
-
+                    print(tempNodeO)
                     structureNode.add((tempNode.id, index))
                     # print(tempNode.typeLabel, '123123123123123')
                 # print(index)
