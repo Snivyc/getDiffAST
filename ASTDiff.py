@@ -64,9 +64,10 @@ class ASTDiff(object):
         if changedType == "MethodInvocation":
             node = self.astBefore.getNodeByID(nodeID)
             block = None
-            for i in range(len(node)-1):
+            for i in range(len(node.children)-1):
                 star = node.children[i].pos + node.children[i].length
                 end = node.children[i + 1].pos
+                print(ast.CODE[star : end])
                 if "(" in ast.CODE[star : end]:
                     block = i
                     break
