@@ -31,7 +31,7 @@ class AST(object):
     def __init__(self,file, code):
         with open(code, 'r') as f:
             self.CODE = f.read()
-        self.CODE.replace("\n", "\r\n")
+        self.CODE = self.CODE.replace("\n", "\r\n")
         self.ASTNodeList = []
         with open(file, 'r') as f:
             ASTJSON = f.read()
