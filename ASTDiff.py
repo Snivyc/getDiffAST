@@ -209,7 +209,8 @@ class ASTDiff(object):
         structureNode = set()
         for i in mergeList:
             tempNode = AST.getNodeByID(i)
-            index = None
+            index = self.getIndexInParent(tempNode.id, AST)
+            tempNode = tempNode.parent
             while True:
                 if tempNode == None:
                     break
