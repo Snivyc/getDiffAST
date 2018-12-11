@@ -62,18 +62,18 @@ class ASTDiff(object):
                 # return "路过..打扰了.."
                 return
         if changedType == "MethodInvocation":
-            print(nodeID)
+            # print(nodeID)
             node = ast.getNodeByID(nodeID)
             block = None
-            print(node.typeLabel)
-            print("***************************************")
-            print(node.pos, node.pos+node.length)
-            print(ast.CODE[node.pos: node.pos+node.length])
+            # print(node.typeLabel)
+            # print("***************************************")
+            # print(node.pos, node.pos+node.length)
+            # print(ast.CODE[node.pos: node.pos+node.length])
             for i in range(len(node.children)-1):
                 start = node.children[i].pos + node.children[i].length
                 end = node.children[i + 1].pos
-                print(start, end)
-                print(ast.CODE[start : end])
+                # print(start, end)
+                # print(ast.CODE[start : end])
                 if "(" in ast.CODE[start:end]:
                     block = i
                     break
@@ -206,7 +206,7 @@ class ASTDiff(object):
             if self.astBefore.getNodeByID(i).parent.id in updateList:
                 continue
             mergeList.append(i)
-        print(mergeList)
+        # print(mergeList)
         return self.searchUpHandleNode(mergeList, self.astBefore)
 
 
@@ -220,12 +220,11 @@ class ASTDiff(object):
             index = self.getIndexInParent(tempNode.id, AST)
             tempNodeO = tempNode
             tempNode = tempNode.parent
-            print("parent",tempNode.id)
             while True:
                 if tempNode == None:
                     break
                 elif tempNode.typeLabel == "MethodDeclaration":
-                    print(tempNodeO.id)
+                    # print(tempNodeO.id)
                     structureNode.add((tempNode.id, index))
                     break
                 # print(tempNode.typeLabel,"----------")
@@ -237,7 +236,7 @@ class ASTDiff(object):
                 index = self.getIndexInParent(tempNode.id, AST)
                 tempNode = tempNode.parent
 
-        print(structureNode)
+        # print(structureNode)
         return structureNode
 
 
