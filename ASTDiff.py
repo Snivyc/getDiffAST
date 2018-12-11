@@ -65,7 +65,7 @@ class ASTDiff(object):
             print(nodeID)
             node = ast.getNodeByID(nodeID)
             block = None
-            print(node.label)
+            print(node.typeLabel)
             print("***************************************")
             print(ast.CODE[node.pos: node.pos+node.length])
             for i in range(len(node.children)-1):
