@@ -221,7 +221,7 @@ class ASTDiff(object):
             #     print(typeLabel, "（未定义）")
             # print(self.astBefore.getNodeByID(ID).typeLabel, self.structureHandle[self.astBefore.getNodeByID(ID).typeLabel])
         # print('-------------------------------------------------------------------------------------------------------')
-        allOutPut = [int(i) for i in allOutPut if i != None]
+        allOutPut = [i for i in allOutPut if i != None]
         allOutPut.sort()
         print(allOutPut)
         return allOutPut
