@@ -2,12 +2,32 @@
 import sys
 import os
 from ASTDiff import ASTDiff
-oldFileName = sys.argv[1]
-newFileName = sys.argv[2]
-os.system("gumtree parse " + oldFileName + " > ASTbefore.json")
-os.system("gumtree parse " + newFileName + " > ASTafter.json")
-os.system("gumtree diff " + oldFileName + " " + newFileName + " > diffscript.txt")
 
-astDiff = ASTDiff(oldFileName, newFileName)
-# print(astDiff.getDiffTreeNode())
-astDiff.outputChangedNode()
+PATH = os.getcwd()
+print(PATH)
+files = os.listdir(PATH)
+# print(files)
+folders = [i for i in files if os.path.isdir(i)]
+print(folders)
+
+for folder in folders:
+    outPut = set()
+    fPath = PATH + "/" + folder + "/"
+    os.chdir(fPath)
+    files = os.listdir(fPath)
+    for file in files:
+        if file.startswith("old_") and file.endswith(".java"):
+            oldFile = file
+            newFile = "new_" + file[4:]
+            print(oldFile)
+            print(newFile)
+            os.system("gumtree parse " + oldFile + " > ASTbefore.json")
+            os.system("gumtree parse " + newFile + " > ASTafter.json")
+            os.system("gumtree diff " + oldFile + " " + newFile + " > diffscript.txt")
+            astDiff = ASTDiff(oldFile, newFile)
+            # print(astDiff.getDiffTreeNode())
+            outPut += astDiff.outputChangedNode()
+    outPut = [i for i in outPut if i != None]
+    outPut.sort()
+    outPut.insert(0, folder)
+    print(outPut)
