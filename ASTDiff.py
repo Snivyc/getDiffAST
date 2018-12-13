@@ -223,7 +223,7 @@ class ASTDiff(object):
         # print('-------------------------------------------------------------------------------------------------------')
         # allOutPut = [i for i in allOutPut if i != None]
         # allOutPut.sort()
-        # print(allOutPut)
+        print("1111111111",allOutPut)
         return allOutPut
 
     def findUpdateBlockNode(self):
