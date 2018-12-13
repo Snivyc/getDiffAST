@@ -108,8 +108,8 @@ class ASTDiff(object):
                 # return "5.2 函数调用.参数"
                 return "5.2"
 
-        return "（未定义）"
-
+        # return "（未定义）"
+        return
 
     def getDiffTreeNode(self):
         '''
@@ -215,12 +215,13 @@ class ASTDiff(object):
             typeLabel = self.astBefore.getNodeByID(t[0]).typeLabel
             # print(t)
             # if (typeLabel, t[1]) in self.defectClassDict:
-            print(self.getBlockName(typeLabel, t[1], t[0], self.astBefore))
+            # print(self.getBlockName(typeLabel, t[1], t[0], self.astBefore))
             allOutPut.add(self.getBlockName(typeLabel, t[1], t[0], self.astBefore))
             # else:
             #     print(typeLabel, "（未定义）")
             # print(self.astBefore.getNodeByID(ID).typeLabel, self.structureHandle[self.astBefore.getNodeByID(ID).typeLabel])
         # print('-------------------------------------------------------------------------------------------------------')
+        allOutPut = [i for i in allOutPut if i != None]
         print(allOutPut)
         return allOutPut
 
