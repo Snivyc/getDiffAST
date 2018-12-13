@@ -24,20 +24,34 @@ class ASTDiff(object):
             "MethodDeclaration": "函数定义"
         }
         self.defectClassDict = {
-            ("IfStatement", 0): "1.1 if.条件",
-            ("IfStatement", 1): "1.2 if.主体",
-            ("IfStatement", 2): "1.3 if.else体",
-            ("ExpressionStatement", 0): "4 表达式语句",
-            ("WhileStatement", 0): "2.1 while.条件",
-            ("WhileStatement", 1): "2.2 while.主体",
-            ("ReturnStatement", 0): "3 return语句",
-            ("ImportDeclaration", 0): "7 import语句",
-            ("ForStatement", 0): "8.1 for.初始条件",
-            ("ForStatement", 1): "8.2 for.循环条件",
-            ("ForStatement", 2): "8.3 for.结束执行的语句",
-            ("ForStatement", 3): "8.4 for.主体",
-            ("SingleVariableDeclaration", 0): "形参.类型",
-            ("SingleVariableDeclaration", 1): "形参.名称",
+            # ("IfStatement", 0): "1.1 if.条件",
+            # ("IfStatement", 1): "1.2 if.主体",
+            # ("IfStatement", 2): "1.3 if.else体",
+            # ("ExpressionStatement", 0): "4 表达式语句",
+            # ("WhileStatement", 0): "2.1 while.条件",
+            # ("WhileStatement", 1): "2.2 while.主体",
+            # ("ReturnStatement", 0): "3 return语句",
+            # ("ImportDeclaration", 0): "7 import语句",
+            # ("ForStatement", 0): "8.1 for.初始条件",
+            # ("ForStatement", 1): "8.2 for.循环条件",
+            # ("ForStatement", 2): "8.3 for.结束执行的语句",
+            # ("ForStatement", 3): "8.4 for.主体",
+            # ("SingleVariableDeclaration", 0): "形参.类型",
+            # ("SingleVariableDeclaration", 1): "形参.名称",
+            ("IfStatement", 0): "1.1",
+            ("IfStatement", 1): "1.2",
+            ("IfStatement", 2): "1.3",
+            ("ExpressionStatement", 0): "4",
+            ("WhileStatement", 0): "2.1",
+            ("WhileStatement", 1): "2.2",
+            ("ReturnStatement", 0): "3",
+            ("ImportDeclaration", 0): "7",
+            ("ForStatement", 0): "8.1",
+            ("ForStatement", 1): "8.2 ",
+            ("ForStatement", 2): "8.3",
+            ("ForStatement", 3): "8.4",
+            # ("SingleVariableDeclaration", 0): "形参.类型",
+            # ("SingleVariableDeclaration", 1): "形参.名称",
         }
 
     def getBlockName(self, changedType, index, nodeID, ast):
@@ -49,15 +63,22 @@ class ASTDiff(object):
         # if changedType == "MethodInvocation":
         #     return "函数调用语句"
         if changedType == "SuperMethodInvocation":
-            return "调用父类方法"
+            # return "调用父类方法"
+            return
         if changedType == "MethodDeclaration":
             typeLabel = ast.getNodeByID(nodeID).children[index].typeLabel
             if typeLabel == "SimpleName":
-                return "函数定义.函数名称"
+                # return "6.1 函数定义.函数名称"
+                return "6.1"
             elif typeLabel == "PrimitiveType":
-                return "函数定义.返回值类型"
+                # return "6.3 函数定义.返回值类型"
+                return "6.3"
             elif typeLabel == "Modifier":
-                return "函数定义.修饰词节点"
+                # return "6.4 函数定义.修饰词节点"
+                return "6.4"
+            elif typeLabel == "SingleVariableDeclaration":
+                # return "6.2 函数定义.参数"
+                return "6.2"
             else:
                 # return "路过..打扰了.."
                 return
@@ -78,11 +99,14 @@ class ASTDiff(object):
                     block = i
                     break
             else:
-                return "5.1 函数调用.方法名"
+                # return "5.1 函数调用.方法名"
+                return "5.1"
             if index <= block:
-                return "5.1 函数调用.方法名"
+                # return "5.1 函数调用.方法名"
+                return "5.1"
             else:
-                return "5.2 函数调用.参数"
+                # return "5.2 函数调用.参数"
+                return "5.2"
 
         return "（未定义）"
 
@@ -169,20 +193,22 @@ class ASTDiff(object):
         return self.searchUpHandleNode(mergeList,self.astBefore)
 
     def outputChangedNode(self):
-
-        print("新加入的节点:")
+        allOutPut = set()
+        # print("新加入的节点:")
         IDsList = self.getPrueInsertNode()
         for t in IDsList:
             typeLabel = self.astAfter.getNodeByID(t[0]).typeLabel
-            print(self.getBlockName(typeLabel, t[1], t[0], self.astAfter))
-        print('-------------------------------------------------------------------------------------------------------')
+            # print(self.getBlockName(typeLabel, t[1], t[0], self.astAfter))
+            allOutPut.add(self.getBlockName(typeLabel, t[1], t[0], self.astAfter))
+        # print('-------------------------------------------------------------------------------------------------------')
 
-        print("删除的节点:")
+        # print("删除的节点:")
         IDsList = self.getPrueDeleteNode()
         for t in IDsList:
             typeLabel = self.astBefore.getNodeByID(t[0]).typeLabel
-            print(self.getBlockName(typeLabel, t[1], t[0], self.astBefore))
-        print('-------------------------------------------------------------------------------------------------------')
+            # print(self.getBlockName(typeLabel, t[1], t[0], self.astBefore))
+            allOutPut.add(self.getBlockName(typeLabel, t[1], t[0], self.astBefore))
+        # print('-------------------------------------------------------------------------------------------------------')
 
         print("修改的语句块：")
         for t in self.findUpdateBlockNode():
@@ -190,6 +216,7 @@ class ASTDiff(object):
             # print(t)
             # if (typeLabel, t[1]) in self.defectClassDict:
             print(self.getBlockName(typeLabel, t[1], t[0], self.astBefore))
+            allOutPut.add(self.getBlockName(typeLabel, t[1], t[0], self.astBefore))
             # else:
             #     print(typeLabel, "（未定义）")
             # print(self.astBefore.getNodeByID(ID).typeLabel, self.structureHandle[self.astBefore.getNodeByID(ID).typeLabel])
