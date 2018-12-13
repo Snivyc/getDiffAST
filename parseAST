@@ -26,7 +26,7 @@ for folder in folders:
             os.system("gumtree diff " + oldFile + " " + newFile + " > diffscript.txt")
             astDiff = ASTDiff(oldFile, newFile)
             # print(astDiff.getDiffTreeNode())
-            outPut += astDiff.outputChangedNode()
+            outPut |= astDiff.outputChangedNode()
     outPut = [i for i in outPut if i != None]
     outPut.sort()
     outPut.insert(0, folder)
