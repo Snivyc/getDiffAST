@@ -4,7 +4,7 @@ import os
 from ASTDiff import ASTDiff
 import csv
 PATH = os.getcwd()
-f = open("3.3data.csv", "a")
+f = open("data.csv", "a")
 
 print(PATH)
 files = os.listdir(PATH)
@@ -34,7 +34,7 @@ for folder in folders:
     outPut.sort()
     outPut.insert(0, folder)
     print(outPut)
-    csvout = csv.writer(outPut)
-    csvout.writerows(f)
+    csvout = csv.writer(f)
+    csvout.writerow(outPut)
 
 f.close()
