@@ -41,6 +41,11 @@ class DiffOperate():
         # print(self.deleteList)
 
     def getMatchedAfterID(self, beforeID):
+        '''
+
+        :param beforeID: AfterAST树中的ID
+        :return: BeforeAST树中的ID，不存在则返回-1
+        '''
         for i in self.matchList:
             if i[0] == beforeID:
                 return i[1]
@@ -73,13 +78,13 @@ class DiffOperate():
         return tempList
 
 
-    def getMovedAfterIDs(self):
+    def getMovedAfterIDsAndIndex(self):
         '''
         返回被移动之后的节点在After树中的ID
         '''
         tempList = []
         for i in self.moveList:
-            tempList.append(i[1])
+            tempList.append((i[1],i[2]))
         return tempList
 
     def getMovedBeforeIDs(self):

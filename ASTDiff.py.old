@@ -151,46 +151,46 @@ class ASTDiff(object):
         # print(self.astBefore.astToJson(commonParentID))
         return commonParentID
 
-    def getPrueInsertNodes(self):
+    def getPrueInsertNode(self):
         '''
         如果一个节点，其自身及所有的孩子都是新增的（被插入，移动），其父节点不是新增的，则返回
         '''
-        ast = self.astAfter
-        tempList = self.diff.getMovedAfterIDsAndIndex()
-        tempList = [ast.getNodeByID(i[0]).children[i[1]].id for i in tempList]
-        joinedNodeIDs = self.diff.getJoinedIDs() + tempList
+        joinedNodeIDs = self.diff.getJoinedIDs() + self.diff.getMovedAfterIDs()
+
+        # def isPrue(i):
+        #     if self.diff.getMatchedBeforeID(i) == -1:
+        #         return -1
+        #     childrenList = self.astAfter.getNodeByID(i).children
+        #     if childrenList != []:
+        #         return -2
+        #     for j in childrenList:
+        #         result = isPrue(j.id)
+        #         if result == -1:
+        #             return -1
+        #         else:
+        #             return 1
+        #
         mergeList = []
 
         for i in joinedNodeIDs:
-            if ast.getNodeByID(i).parent.id in joinedNodeIDs:
+            if self.diff.isJoinNode(self.astAfter.getNodeByID(i).parent.id):
                 continue
-            else:
-                mergeList.append(i)
-        return mergeList
+            mergeList.append(i)
+            # if self.astAfter.getNodeByID(i).children == []:
+            #     continue
+            # if isPrue(i):
+            #     returnList.append(i)
+        return self.searchUpHandleNode(mergeList,self.astAfter)
 
-    def getPrueDeleteNodes(self):
-        ast = self.astBefore
+    def getPrueDeleteNode(self):
         deletedNodeIDs = self.diff.getDeleteBeforeIDs() + self.diff.getMovedBeforeIDs()
         mergeList = []
 
         for i in deletedNodeIDs:
-            if ast.getNodeByID(i).parent.id in deletedNodeIDs:
+            if self.astBefore.getNodeByID(i).parent.id in deletedNodeIDs:
                 continue
             mergeList.append(i)
-        return mergeList
-
-    def getPrueUpdateNodes(self):
-        '''
-        寻找所有changed所在的节点更新的语句块
-        '''
-        updateList = self.diff.getUpdateBeforeIDs()
-        mergeList = []
-
-        for i in updateList:
-            if self.astBefore.getNodeByID(i).parent.id in updateList:
-                continue
-            mergeList.append(i)
-        return mergeList
+        return self.searchUpHandleNode(mergeList,self.astBefore)
 
     def outputChangedNode(self):
         allOutPut = set()
@@ -226,19 +226,18 @@ class ASTDiff(object):
         print("1111111111",allOutPut)
         return allOutPut
 
-    def searchUpList(self, nodeID, AST):
-        node = AST.getNodeByID(nodeID)
-        pNode = node
-        index = AST.getIndexInParent(nodeID)
-        returnList = []
-        while (not pNode is None):
-            # AST.getIndexInParent(nodeID)
-            pNode = pNode.parent
-            returnList.append((pNode, index))
-            index = AST.getIndexInParent(pNode.id)
-        return node, returnList
-
-
+    def findUpdateBlockNode(self):
+        '''
+        寻找所有changed所在的节点更新的语句块
+        '''
+        updateList = self.diff.getUpdateBeforeIDs()
+        mergeList = []
+        for i in updateList:
+            if self.astBefore.getNodeByID(i).parent.id in updateList:
+                continue
+            mergeList.append(i)
+        # print(mergeList)
+        return self.searchUpHandleNode(mergeList, self.astBefore)
 
 
     def searchUpHandleNode(self, mergeList, AST):
@@ -271,17 +270,17 @@ class ASTDiff(object):
         return structureNode
 
 
-    # def getIndexInParent(self, ID, ast):
-    #     '''
-    #     获取改节点在父节点中的下标，！！！！！！！需移动到AST类中！！！！！！！！！
-    #     '''
-    #     parent = ast.getNodeByID(ID).parent
-    #     if parent != None:
-    #         for i in range(len(parent.children)):
-    #             if parent.children[i].id == ID:
-    #                 return i
-    #     else:
-    #         return 0
+    def getIndexInParent(self, ID, ast):
+        '''
+        获取改节点在父节点中的下标，！！！！！！！需移动到AST类中！！！！！！！！！
+        '''
+        parent = ast.getNodeByID(ID).parent
+        if parent != None:
+            for i in range(len(parent.children)):
+                if parent.children[i].id == ID:
+                    return i
+        else:
+            return 0
 
 
 

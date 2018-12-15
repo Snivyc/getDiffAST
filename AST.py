@@ -69,6 +69,18 @@ class AST(object):
     def getHeadNode(self):
         return self.ASTNodeList[-1]
 
+    def getIndexInParent(self, ID):
+        '''
+        获取改节点在父节点中的下标，！！！！！！！需移动到AST类中！！！！！！！！！
+        '''
+        parent = self.getNodeByID(ID).parent
+        if parent != None:
+            for i in range(len(parent.children)):
+                if parent.children[i].id == ID:
+                    return i
+        else:
+            raise RuntimeError("没有父节点")
+
 
 if __name__ == "__main__":
     astBefore = AST("ASTbefore.json")
