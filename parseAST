@@ -4,37 +4,39 @@ import os
 from ASTDiff import ASTDiff
 import csv
 PATH = os.getcwd()
-f = open("data.csv", "a")
+with open("data.csv", "a") as f:
 
-print(PATH)
-files = os.listdir(PATH)
+    print(PATH)
+    files = os.listdir(PATH)
 # print(files)
-folders = [i for i in files if os.path.isdir(i)]
-print(folders)
+    folders = [i for i in files if os.path.isdir(i)]
+    print(folders)
 
-for folder in folders:
-    outPut = set()
-    fPath = PATH + "/" + folder + "/"
-    os.chdir(fPath)
-    files = os.listdir(fPath)
-    for file in files:
-        if file.startswith("old_") and file.endswith(".java"):
-            oldFile = file
-            newFile = "new_" + file[4:]
-            print(oldFile)
-            print(newFile)
-            os.system("gumtree parse " + oldFile + " > ASTbefore.json")
-            os.system("gumtree parse " + newFile + " > ASTafter.json")
-            os.system("gumtree diff " + oldFile + " " + newFile + " > diffscript.txt")
-            astDiff = ASTDiff(oldFile, newFile)
-            # print(astDiff.getDiffTreeNode())
-            outPut |= astDiff.outputChangedNode()
-            print(outPut)
-    outPut = [i for i in outPut if i != None]
-    outPut.sort()
-    outPut.insert(0, folder)
-    print(outPut)
-    csvout = csv.writer(f)
-    csvout.writerow(outPut)
+    for folder in folders:
+        outPut = set()
+        fPath = PATH + "/" + folder + "/"
+        os.chdir(fPath)
+        files = os.listdir(fPath)
+        for file in files:
+            if file.startswith("old_") and file.endswith(".java"):
+                oldFile = file
+                newFile = "new_" + file[4:]
+                print(oldFile)
+                print(newFile)
+                os.system("gumtree parse " + oldFile + " > ASTbefore.json")
+                os.system("gumtree parse " + newFile + " > ASTafter.json")
+                os.system("gumtree diff " + oldFile + " " + newFile + " > diffscript.txt")
+                try:
+                    astDiff = ASTDiff(oldFile, newFile)
+                # print(astDiff.getDiffTreeNode())
+                    outPut |= astDiff.outputChangedNode()
+                except:
+                    outPut.add("error")
+        outPut = [i for i in outPut if i != None]
+        outPut.sort()
+        outPut.insert(0, folder)
+        print(outPut)
+        csvout = csv.writer(f)
+        csvout.writerow(outPut)
 
-f.close()
+
